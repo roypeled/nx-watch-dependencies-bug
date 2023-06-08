@@ -1,7 +1,7 @@
 {
-  "name": "watch-test",
+  "name": "foo",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "apps/watch-test/src",
+  "sourceRoot": "apps/foo/src",
   "projectType": "application",
   "targets": {
     "build": {
@@ -11,30 +11,51 @@
       "options": {
         "target": "node",
         "compiler": "tsc",
-        "outputPath": "dist/apps/watch-test",
-        "main": "apps/watch-test/src/main.ts",
-        "tsConfig": "apps/watch-test/tsconfig.app.json",
-        "assets": ["apps/watch-test/src/assets"],
+        "outputPath": "dist/apps/foo",
+        "main": "apps/foo/src/main.ts",
+        "tsConfig": "apps/foo/tsconfig.app.json",
+        "assets": ["apps/foo/src/assets"],
         "isolatedConfig": true,
-        "webpackConfig": "apps/watch-test/webpack.config.js"
+        "webpackConfig": "apps/foo/webpack.config.js"
       },
       "configurations": {
         "development": {},
         "production": {}
       }
     },
+    "build-schema-from-bar-not-needed-for-serve": {
+      "executor": "@nx/js:node",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "foo:build"
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "foo:build:development"
+        },
+        "production": {
+          "buildTarget": "foo:build:production"
+        }
+      },
+      "dependsOn": [
+        {
+          "target": "build",
+          "dependencies": true
+        }
+      ]
+    },
     "serve": {
       "executor": "@nx/js:node",
       "defaultConfiguration": "development",
       "options": {
-        "buildTarget": "watch-test:build"
+        "buildTarget": "foo:build"
       },
       "configurations": {
         "development": {
-          "buildTarget": "watch-test:build:development"
+          "buildTarget": "foo:build:development"
         },
         "production": {
-          "buildTarget": "watch-test:build:production"
+          "buildTarget": "foo:build:production"
         }
       }
     },
@@ -42,14 +63,14 @@
       "executor": "@nx/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["apps/watch-test/**/*.ts"]
+        "lintFilePatterns": ["apps/foo/**/*.ts"]
       }
     },
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
-        "jestConfig": "apps/watch-test/jest.config.ts",
+        "jestConfig": "apps/foo/jest.config.ts",
         "passWithNoTests": true
       },
       "configurations": {
@@ -60,5 +81,6 @@
       }
     }
   },
-  "tags": []
+  "tags": [],
+  "implicitDependencies": ["bar"]
 }
